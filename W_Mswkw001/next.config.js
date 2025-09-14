@@ -4,7 +4,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: { unoptimized: true },
+  transpilePackages: [],
   experimental: {
     serverComponentsExternalPackages: ['google-spreadsheet', 'google-auth-library'],
   },

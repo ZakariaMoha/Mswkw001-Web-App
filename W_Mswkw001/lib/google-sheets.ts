@@ -1,4 +1,4 @@
-import { GoogleSpreadsheet } from 'google-spreadsheet';
+/// <reference types="node" />
 import { JWT } from 'google-auth-library';
 import { Product } from '@/types/product';
 
@@ -16,6 +16,7 @@ const serviceAccountAuth = new JWT({
 
 export async function getProducts(): Promise<Product[]> {
   try {
+    const { GoogleSpreadsheet } = await import('google-spreadsheet');
     const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
     await doc.loadInfo();
     
