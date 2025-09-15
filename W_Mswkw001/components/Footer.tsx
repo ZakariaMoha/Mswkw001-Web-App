@@ -91,15 +91,15 @@ export default function Footer() {
             <div className="space-y-3 text-green-100">
               <div className="flex items-center space-x-3">
                 <Phone size={16} />
-                <span>+92 {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}</span>
+                <span>+254792095003 {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail size={16} />
-                <span>info@miswakworld.com</span>
+                <span>miswakworld@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin size={16} />
-                <span>Karachi, Pakistan</span>
+                <span>Nairobi, Kenya</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Instagram size={16} />

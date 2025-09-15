@@ -15,7 +15,8 @@ import SunnahSection from '@/components/SunnahSection';
 import Footer from '@/components/Footer';
 import CartDrawer from '@/components/CartDrawer';
 import FloatingWhatsApp from '@/components/FloatingWhatsApp';
-import VideoPlayer from '@/components/VideoPlayer';
+// Removed import of VideoPlayer since it's no longer used
+// import VideoPlayer from '@/components/VideoPlayer';
 
 interface ClientPageProps {
   products: Product[];
@@ -33,19 +34,7 @@ export default function ClientPage({ products, testimonials }: ClientPageProps) 
         <ProductShowcase products={products} />
         <BenefitsSection />
         <TutorialSection />
-        <section id="video" className="py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 mt-4 mb-6">
-                Watch Our Story
-              </h2>
-              <p className="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed">
-                Learn more about the tradition and benefits of miswak.
-              </p>
-            </div>
-            <VideoPlayer />
-          </div>
-        </section>
+        {/* Removed the entire Watch Our Story section */}
         {testimonials.length > 0 && (
           <section id="testimonials" className="py-20 bg-gradient-to-br from-yellow-50 to-green-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,9 +1,10 @@
 import { getProducts, getTestimonials } from '@/lib/google-sheets';
+import { Product, Testimonial } from '@/types/product';
 import ClientPage from './client-page';
 
 export default async function Home() {
-  let products = [];
-  let testimonials = [];
+  let products: Product[] = [];
+  let testimonials: Testimonial[] = [];
 
   try {
     const [productsData, testimonialsData] = await Promise.all([

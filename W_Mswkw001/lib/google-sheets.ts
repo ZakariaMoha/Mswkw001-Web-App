@@ -68,7 +68,7 @@ export async function addProduct(product: Omit<Product, 'id'>): Promise<void> {
     const { GoogleSpreadsheet } = await import('google-spreadsheet');
     const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
     await doc.loadInfo();
-    
+
     const sheet = doc.sheetsByIndex[0];
     await sheet.addRow({
       name: product.name,
@@ -81,6 +81,61 @@ export async function addProduct(product: Omit<Product, 'id'>): Promise<void> {
     });
   } catch (error) {
     console.error('Error adding product to Google Sheets:', error);
+    throw error;
+  }
+}
+
+export async function updateProduct(id: string, product: Omit<Product, 'id'>): Promise<void> {
+  try {
+    const { GoogleSpreadsheet } = await import('google-spreadsheet');
+    const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
+    await doc.loadInfo();
+
+    const sheet = doc.sheetsByIndex[0];
+    const rows = await sheet.getRows();
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const rowId = row.get('name') ? row.get('name').toString().toLowerCase().replace(/\s+/g, '-') + '-' + i : `product-${i}`;
+      if (rowId === id) {
+        row.set('name', product.name);
+        row.set('description', product.description);
+        row.set('price', product.price.toString());
+        row.set('image', product.imageURL);
+        row.set('category', product.category);
+        row.set('stock', product.stock || 'In Stock');
+        row.set('badge', product.badge || '');
+        await row.save();
+        return;
+      }
+    }
+    throw new Error('Product not found');
+  } catch (error) {
+    console.error('Error updating product in Google Sheets:', error);
+    throw error;
+  }
+}
+
+export async function deleteProduct(id: string): Promise<void> {
+  try {
+    const { GoogleSpreadsheet } = await import('google-spreadsheet');
+    const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
+    await doc.loadInfo();
+
+    const sheet = doc.sheetsByIndex[0];
+    const rows = await sheet.getRows();
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const rowId = row.get('name') ? row.get('name').toString().toLowerCase().replace(/\s+/g, '-') + '-' + i : `product-${i}`;
+      if (rowId === id) {
+        await row.delete();
+        return;
+      }
+    }
+    throw new Error('Product not found');
+  } catch (error) {
+    console.error('Error deleting product from Google Sheets:', error);
     throw error;
   }
 }
