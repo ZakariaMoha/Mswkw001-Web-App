@@ -79,7 +79,7 @@ export default function CartDrawer() {
                         />
                         <div className="flex-1">
                           <h3 className="font-medium text-sm">{item.name}</h3>
-                          <p className="text-green-600 font-semibold">PKR {item.price}</p>
+                          <p className="text-green-600 font-semibold">kshs {item.price}</p>
                           <div className="flex items-center mt-2">
                             <Button
                               variant="outline"
@@ -115,7 +115,7 @@ export default function CartDrawer() {
                   <div className="border-t pt-4 mb-6">
                     <div className="flex justify-between text-lg font-semibold">
                       <span>Total:</span>
-                      <span className="text-green-600">PKR {totalPrice}</span>
+                      <span className="text-green-600">kshs {totalPrice}</span>
                     </div>
                   </div>
 

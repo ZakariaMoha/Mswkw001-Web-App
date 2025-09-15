@@ -14,11 +14,12 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1);
-  const { addItem } = useCart();
+  const { addItem, setIsOpen } = useCart();
 
   const handleAddToCart = () => {
     addItem(product, quantity);
     setQuantity(1);
+    setIsOpen(true);
   };
 
   const incrementQuantity = () => setQuantity(prev => prev + 1);
@@ -37,17 +38,13 @@ export default function ProductCard({ product }: ProductCardProps) {
           src={product.imageURL}
           alt={product.name}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.onerror = null; // prevent infinite loop
+            target.src = '/fallback-image.png'; // fallback image path
+          }}
         />
-        {product.badge && (
-          <Badge className="absolute top-3 left-3 bg-yellow-500 text-yellow-900 hover:bg-yellow-500">
-            {product.badge}
-          </Badge>
-        )}
-        <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold ${
-          product.stock === 'In Stock' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
-          {product.stock}
-        </div>
+
       </div>
       
       <div className="p-6">
@@ -55,7 +52,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <p className="text-neutral-600 text-sm mb-4 line-clamp-2">{product.description}</p>
         
         <div className="flex items-center justify-between mb-4">
-          <span className="text-2xl font-bold text-green-700">PKR {product.price}</span>
+          <span className="text-2xl font-bold text-green-700">kshs {product.price}</span>
           <Badge variant="outline" className="text-xs">
             {product.category}
           </Badge>
@@ -85,7 +82,6 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <Button
           onClick={handleAddToCart}
-          disabled={product.stock !== 'In Stock'}
           className="w-full bg-green-600 hover:bg-green-700 text-white"
         >
           <ShoppingCart size={16} className="mr-2" />

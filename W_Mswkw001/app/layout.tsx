@@ -1,3 +1,4 @@
+import { CartProvider } from '@/hooks/useCart';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
@@ -14,38 +15,47 @@ const playfair = Playfair_Display({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: 'Miswak World - Premium Natural Oral Care | Follow the Sunnah 🌿',
-  description: 'Discover authentic miswak sticks from Miswak World. 100% natural oral care following Islamic tradition. Strengthens gums, whitens teeth naturally. Order on WhatsApp.',
-  keywords: 'miswak, siwak, natural oral care, Islamic tradition, sunnah, teeth whitening, gum care, antibacterial, Pakistan',
-  authors: [{ name: 'Miswak World' }],
-  openGraph: {
-    title: 'Miswak World - Premium Natural Oral Care',
-    description: 'Revive the Sunnah 🌿 Refresh Your Smile Naturally with our premium miswak sticks',
-    url: process.env.NEXT_PUBLIC_SITE_URL,
-    siteName: 'Miswak World',
-    images: [
-      {
-        url: 'https://images.pexels.com/photos/4239032/pexels-photo-4239032.jpeg?auto=compress&cs=tinysrgb&w=1200&h=630&fit=crop',
-        width: 1200,
-        height: 630,
-        alt: 'Miswak World - Natural Miswak Sticks',
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Miswak World - Premium Natural Oral Care',
-    description: 'Revive the Sunnah 🌿 Refresh Your Smile Naturally',
-    images: ['https://images.pexels.com/photos/4239032/pexels-photo-4239032.jpeg?auto=compress&cs=tinysrgb&w=1200&h=630&fit=crop'],
-  },
-  viewport: 'width=device-width, initial-scale=1',
-  robots: 'index, follow',
-  alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL,
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Miswak World - Premium Natural Oral Care | Follow the Sunnah 🌿',
+    description: 'Discover authentic miswak sticks from Miswak World. 100% natural oral care following Islamic tradition. Strengthens gums, whitens teeth naturally. Order on WhatsApp.',
+    keywords: 'miswak, siwak, natural oral care, Islamic tradition, sunnah, teeth whitening, gum care, antibacterial, Pakistan',
+    authors: [{ name: 'Miswak World' }],
+    openGraph: {
+      title: 'Miswak World - Premium Natural Oral Care',
+      description: 'Revive the Sunnah 🌿 Refresh Your Smile Naturally with our premium miswak sticks',
+      url: process.env.NEXT_PUBLIC_SITE_URL,
+      siteName: 'Miswak World',
+      images: [
+        {
+          url: 'https://images.pexels.com/photos/4239032/pexels-photo-4239032.jpeg?auto=compress&cs=tinysrgb&w=1200&h=630&fit=crop',
+          width: 1200,
+          height: 630,
+          alt: 'Miswak World - Natural Miswak Sticks',
+        },
+      ],
+      locale: 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Miswak World - Premium Natural Oral Care',
+      description: 'Revive the Sunnah 🌿 Refresh Your Smile Naturally',
+      images: ['https://images.pexels.com/photos/4239032/pexels-photo-4239032.jpeg?auto=compress&cs=tinysrgb&w=1200&h=630&fit=crop'],
+    },
+
+    robots: 'index, follow',
+    alternates: {
+      canonical: process.env.NEXT_PUBLIC_SITE_URL,
+    },
+  };
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
@@ -91,7 +101,10 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} antialiased`}>
-        {children}
+        {/* Wrap the app with CartProvider for shared cart state */}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

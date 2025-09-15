@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { JWT } from 'google-auth-library';
 import { Product } from '@/types/product';
 
@@ -23,18 +22,18 @@ export async function getProducts(): Promise<Product[]> {
     const sheet = doc.sheetsByIndex[0];
     const rows = await sheet.getRows();
     
-    const products: Product[] = rows.map((row) => ({
-      id: row.get('ID') || '',
-      name: row.get('Name') || '',
-      description: row.get('Description') || '',
-      price: parseFloat(row.get('Price')) || 0,
-      imageURL: row.get('ImageURL') || '',
-      category: row.get('Category') || '',
-      stock: row.get('Stock') || '',
-      badge: row.get('Badge') || undefined,
+    const products: Product[] = rows.map((row, index) => ({
+      id: row.get('name') ? row.get('name').toString().toLowerCase().replace(/\s+/g, '-') + '-' + index : `product-${index}`,
+      name: row.get('name') || '',
+      description: row.get('description') || '',
+      price: parseFloat(row.get('price')) || 0,
+      imageURL: row.get('image') || '',
+      category: row.get('category') || 'General',
+      stock: row.get('stock') || 'In Stock',
+      badge: row.get('badge') || undefined,
     }));
 
-    return products.filter(product => product.id && product.name);
+    return products.filter(product => product.name);
   } catch (error) {
     console.error('Error fetching products from Google Sheets:', error);
     return [];
@@ -42,7 +41,6 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function getTestimonials() {
-  // This would be from a second sheet or different columns
   return [
     {
       id: '1',
@@ -63,4 +61,26 @@ export async function getTestimonials() {
       rating: 5,
     },
   ];
+}
+
+export async function addProduct(product: Omit<Product, 'id'>): Promise<void> {
+  try {
+    const { GoogleSpreadsheet } = await import('google-spreadsheet');
+    const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
+    await doc.loadInfo();
+    
+    const sheet = doc.sheetsByIndex[0];
+    await sheet.addRow({
+      name: product.name,
+      description: product.description,
+      price: product.price.toString(),
+      image: product.imageURL,
+      category: product.category,
+      stock: product.stock || 'In Stock',
+      badge: product.badge || '',
+    });
+  } catch (error) {
+    console.error('Error adding product to Google Sheets:', error);
+    throw error;
+  }
 }
