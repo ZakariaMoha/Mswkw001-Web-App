@@ -45,8 +45,17 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { id, name, description, price, category, imageURL, stock, badge } = body;
 
-    if (!id || !name || !description || !price || !category || !imageURL) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    const missingFields = [];
+    if (!id) missingFields.push('id');
+    if (!name) missingFields.push('name');
+    if (!description) missingFields.push('description');
+    if (!price && price !== 0) missingFields.push('price');
+    if (!category) missingFields.push('category');
+    if (!imageURL) missingFields.push('imageURL');
+
+    if (missingFields.length > 0) {
+      console.error('Missing required fields:', missingFields);
+      return NextResponse.json({ error: `Missing required fields: ${missingFields.join(', ')}` }, { status: 400 });
     }
 
     const product: Omit<Product, 'id'> = {

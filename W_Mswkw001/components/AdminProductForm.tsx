@@ -93,16 +93,19 @@ export default function AdminProductForm({ onProductAdded }: AdminProductFormPro
         required
       />
 
-      <label className="block mb-2 font-semibold">Price</label>
-      <input
-        type="number"
-        value={price}
-        onChange={e => setPrice(e.target.value === '' ? '' : Number(e.target.value))}
-        className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
-        required
-        min={0}
-        step="0.01"
-      />
+      <label className="block mb-2 font-semibold">Price (kshs)</label>
+      <div className="relative">
+        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">kshs</span>
+        <input
+          type="number"
+          value={price}
+          onChange={e => setPrice(e.target.value === '' ? '' : Number(e.target.value))}
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-4 pl-12"
+          required
+          min={0}
+          step="0.01"
+        />
+      </div>
 
       <label className="block mb-2 font-semibold">Category</label>
       <input

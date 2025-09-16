@@ -65,6 +65,12 @@ export default function ProductEditForm({ product, onClose, onProductUpdated }: 
     }
 
     try {
+      if (!product.id) {
+        setError('Product ID is missing.');
+        console.error('Product ID is missing:', product);
+        return;
+      }
+
       const updatedProduct = {
         id: product.id,
         name,
@@ -75,6 +81,8 @@ export default function ProductEditForm({ product, onClose, onProductUpdated }: 
         stock,
         badge,
       };
+
+      console.log('Sending PUT request to /api/products with:', updatedProduct);
 
       await axios.put('/api/products', updatedProduct);
 

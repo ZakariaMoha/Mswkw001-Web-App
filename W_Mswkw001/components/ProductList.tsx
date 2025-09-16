@@ -59,7 +59,7 @@ export default function ProductList({ onEdit, refreshTrigger }: ProductListProps
               <img src={product.imageURL} alt={product.name} className="w-full h-32 object-cover mb-2" />
               <h3 className="font-semibold">{product.name}</h3>
               <p className="text-sm text-gray-600">{product.description}</p>
-              <p className="text-sm">Price: ${product.price}</p>
+              <p className="text-sm">Price: kshs {product.price}</p>
               <p className="text-sm">Category: {product.category}</p>
               {product.stock && <p className="text-sm">Stock: {product.stock}</p>}
               {product.badge && <p className="text-sm">Badge: {product.badge}</p>}

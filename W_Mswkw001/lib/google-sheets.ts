@@ -13,17 +13,27 @@ const serviceAccountAuth = new JWT({
   ],
 });
 
+function generateUniqueId() {
+  // Simple unique id generator using timestamp and random number
+  return 'prod-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+}
+
 export async function getProducts(): Promise<Product[]> {
-  try {
-    const { GoogleSpreadsheet } = await import('google-spreadsheet');
-    const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
-    await doc.loadInfo();
-    
-    const sheet = doc.sheetsByIndex[0];
-    const rows = await sheet.getRows();
-    
-    const products: Product[] = rows.map((row, index) => ({
-      id: row.get('name') ? row.get('name').toString().toLowerCase().replace(/\s+/g, '-') + '-' + index : `product-${index}`,
+  const { GoogleSpreadsheet } = await import('google-spreadsheet');
+  const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
+  await doc.loadInfo();
+
+  const sheet = doc.sheetsByIndex[0];
+  const rows = await sheet.getRows();
+
+  const products: Product[] = rows
+    .filter((row) => {
+      const name = row.get('name');
+      // Exclude header row and rows with empty name
+      return name && name.toString().toLowerCase() !== 'name' && name.toString().trim() !== '';
+    })
+    .map((row) => ({
+      id: row.get('id') || '',  // Use dedicated id column
       name: row.get('name') || '',
       description: row.get('description') || '',
       price: parseFloat(row.get('price')) || 0,
@@ -33,34 +43,7 @@ export async function getProducts(): Promise<Product[]> {
       badge: row.get('badge') || undefined,
     }));
 
-    return products.filter(product => product.name);
-  } catch (error) {
-    console.error('Error fetching products from Google Sheets:', error);
-    return [];
-  }
-}
-
-export async function getTestimonials() {
-  return [
-    {
-      id: '1',
-      name: 'Ahmad Rahman',
-      content: 'Amazing quality miswak! My teeth feel cleaner and stronger. Highly recommend for following the Sunnah.',
-      rating: 5,
-    },
-    {
-      id: '2',
-      name: 'Fatima Al-Zahra',
-      content: 'Fresh and natural. Perfect for daily use. Fast delivery and excellent customer service.',
-      rating: 5,
-    },
-    {
-      id: '3',
-      name: 'Omar Hassan',
-      content: 'Best miswak I\'ve tried. Authentic quality and reasonably priced. Will order again!',
-      rating: 5,
-    },
-  ];
+  return products;
 }
 
 export async function addProduct(product: Omit<Product, 'id'>): Promise<void> {
@@ -70,7 +53,10 @@ export async function addProduct(product: Omit<Product, 'id'>): Promise<void> {
     await doc.loadInfo();
 
     const sheet = doc.sheetsByIndex[0];
+    const newId = generateUniqueId();
+
     await sheet.addRow({
+      id: newId,
       name: product.name,
       description: product.description,
       price: product.price.toString(),
@@ -94,9 +80,8 @@ export async function updateProduct(id: string, product: Omit<Product, 'id'>): P
     const sheet = doc.sheetsByIndex[0];
     const rows = await sheet.getRows();
 
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
-      const rowId = row.get('name') ? row.get('name').toString().toLowerCase().replace(/\s+/g, '-') + '-' + i : `product-${i}`;
+    for (const row of rows) {
+      const rowId = row.get('id');
       if (rowId === id) {
         row.set('name', product.name);
         row.set('description', product.description);
@@ -125,9 +110,8 @@ export async function deleteProduct(id: string): Promise<void> {
     const sheet = doc.sheetsByIndex[0];
     const rows = await sheet.getRows();
 
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
-      const rowId = row.get('name') ? row.get('name').toString().toLowerCase().replace(/\s+/g, '-') + '-' + i : `product-${i}`;
+    for (const row of rows) {
+      const rowId = row.get('id');
       if (rowId === id) {
         await row.delete();
         return;
