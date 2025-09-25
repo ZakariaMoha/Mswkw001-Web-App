@@ -1,5 +1,5 @@
 import { JWT } from 'google-auth-library';
-import { Product } from '@/types/product';
+import { Product, Testimonial } from '@/types/product';
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
 const CLIENT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL!;
