@@ -125,6 +125,7 @@ export async function deleteProduct(id: string): Promise<void> {
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
+  console.log('Getting testimonials from Google Sheets');
   const { GoogleSpreadsheet } = await import('google-spreadsheet');
   const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
   await doc.loadInfo();
@@ -145,6 +146,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
       content: row.get('content') || '',
       rating: parseFloat(row.get('rating')) || 0,
     }));
+
 
   return testimonials;
 }
