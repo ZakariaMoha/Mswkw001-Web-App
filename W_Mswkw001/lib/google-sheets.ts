@@ -87,9 +87,6 @@ export async function updateProduct(id: string, product: Omit<Product, 'id'>): P
         row.set('description', product.description);
         row.set('price', product.price.toString());
         row.set('image', product.imageURL);
-        row.set('category', product.category);
-        row.set('stock', product.stock || 'In Stock');
-        row.set('badge', product.badge || '');
         await row.save();
         return;
       }
