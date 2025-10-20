@@ -120,3 +120,37 @@ export async function deleteProduct(id: string): Promise<void> {
     throw error;
   }
 }
+
+export async function getTestimonials(): Promise<Testimonial[]> {
+  try {
+    const { GoogleSpreadsheet } = await import('google-spreadsheet');
+    const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
+    await doc.loadInfo();
+
+    // Get the Testimonials sheet (second sheet, index 1)
+    const sheet = doc.sheetsByIndex[1];
+    if (!sheet) {
+      console.warn('Testimonials sheet not found');
+      return [];
+    }
+
+    const rows = await sheet.getRows();
+
+    const testimonials: Testimonial[] = rows
+      .filter((row) => {
+        const name = row.get('name');
+        return name && name.toString().trim() !== '';
+      })
+      .map((row, index) => ({
+        id: row.get('id') || `testimonial-${index}`,
+        name: row.get('name') || '',
+        content: row.get('text') || row.get('content') || row.get('testimonial') || '',
+        rating: parseInt(row.get('rating')) || 5,
+      }));
+
+    return testimonials;
+  } catch (error) {
+    console.error('Error fetching testimonials from Google Sheets:', error);
+    return []; // Return empty array on error instead of throwing
+  }
+}
